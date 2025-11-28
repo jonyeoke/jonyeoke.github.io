@@ -22,32 +22,28 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 /* Layout */
 .container { max-width: 1400px; margin: 0 auto; display: flex; gap: 30px; padding: 0 20px; }
 
-/* [중요] 스크롤 기능 추가된 박스 스타일 */
+/* [수정] 박스 스타일: 스크롤 제거 및 Flex 적용 */
 .box {
     background: var(--white);
     border-radius: 20px;
     padding: 40px;
     box-shadow: var(--shadow);
     flex: 1;
-    /* 높이 설정 및 스크롤 */
-    height: 1000px;         /* 높이를 고정하거나 */
-    max-height: 500px;     /* 최대 높이를 설정 */
-    overflow-y: auto;      /* 내용이 넘치면 세로 스크롤 생성 */
-
+    height: 800px;         /* 높이 고정 */
     border: 2px solid transparent;
     transition: 0.3s;
+
+    /* 내부 요소 정렬을 위한 Flex 설정 */
+    display: flex;
+    flex-direction: column;
 }
 .box:hover { border-color: #D6EBFF; }
-.box-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid var(--secondary-color); color: var(--text-dark); }
-
-/* 스크롤바 디자인 (선택사항 - 크롬/사파리용) */
-.box::-webkit-scrollbar { width: 8px; }
-.box::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
-.box::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
-.box::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
-
+.box-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid var(--secondary-color); color: var(--text-dark); flex-shrink: 0; /* 제목은 줄어들지 않음 */ }
 
 /* Form Elements */
+/* 왼쪽 입력 박스는 내용이 많으면 전체 스크롤 허용 */
+.input-section { overflow-y: auto; }
+
 .form-group { margin-bottom: 25px; }
 .form-label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--accent-color); }
 .live-check { font-size: 0.9rem; color: var(--primary-color); font-weight: 700; margin-left: 10px; }
@@ -68,10 +64,25 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .loader { display: none; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 200px auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-.result-content { display: none; animation: fadeIn 0.5s ease-in-out; }
+/* [수정] 결과 컨테이너: 남은 높이를 모두 채우고 Flex Column 적용 */
+.result-content {
+    display: none;
+    flex-direction: column;
+    height: 100%;
+    overflow: hidden; /* 내부 스크롤 제어 */
+    animation: fadeIn 0.5s ease-in-out;
+}
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-.result-header { background: var(--secondary-color); padding: 20px; border-radius: 15px; margin-bottom: 25px; text-align: center; }
+/* 고정 영역 (Header + Comment) */
+.result-header {
+    background: var(--secondary-color);
+    padding: 20px;
+    border-radius: 15px;
+    margin-bottom: 25px;
+    text-align: center;
+    flex-shrink: 0; /* 고정 */
+}
 .trip-title { font-size: 1.4rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; }
 .reality-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem; color: white; margin-bottom: 10px; }
 .score-high { background-color: var(--success); }
@@ -79,9 +90,34 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .score-mid { background-color: #FAB005; }
 .total-cost { font-size: 1.2rem; font-weight: 700; color: var(--text-dark); }
 
-.planner-comment { background-color: #fff; border-left: 5px solid var(--primary-color); padding: 15px; margin-bottom: 25px; font-size: 0.95rem; color: var(--text-gray); line-height: 1.5; box-shadow: 0 2px 8px rgba(0,0,0,0.05); }
+.planner-comment {
+    background-color: #fff;
+    border-left: 5px solid var(--primary-color);
+    padding: 15px;
+    margin-bottom: 25px;
+    font-size: 0.95rem;
+    color: var(--text-gray);
+    line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+    flex-shrink: 0; /* 고정 */
+}
 
-.timeline { position: relative; padding-left: 20px; border-left: 2px solid #ddd; }
+/* [수정] 타임라인: 남은 공간을 차지하고 스크롤 생성 */
+.timeline {
+    position: relative;
+    padding-left: 20px;
+    border-left: 2px solid #ddd;
+    flex: 1;            /* 남은 공간 모두 차지 */
+    overflow-y: auto;   /* 내용 넘치면 스크롤 */
+    padding-right: 10px; /* 스크롤바 공간 확보 */
+}
+
+/* 스크롤바 디자인 */
+.timeline::-webkit-scrollbar { width: 8px; }
+.timeline::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
+.timeline::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
+.timeline::-webkit-scrollbar-thumb:hover { background: var(--primary-color); }
+
 .day-block { margin-bottom: 30px; position: relative; }
 .day-marker { position: absolute; left: -29px; top: 0; width: 16px; height: 16px; background: var(--primary-color); border-radius: 50%; border: 4px solid white; box-shadow: 0 0 0 2px var(--primary-color); }
 .day-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; color: var(--text-dark); }
@@ -99,5 +135,7 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 @media (max-width: 768px) {
     .container { flex-direction: column; }
     .checkbox-group { grid-template-columns: repeat(2, 1fr); }
-    .box { height: auto; max-height: none; } /* 모바일에서는 스크롤 없이 길게 보여주는게 보통 더 낫습니다 */
+    .box { height: auto; display: block; }
+    .result-content { display: block; height: auto; }
+    .timeline { overflow-y: visible; }
 }

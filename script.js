@@ -32,7 +32,7 @@ budgetInput.addEventListener('input', function() {
     }
 });
 
-// 금액을 한글로 바꾸는 헬퍼 함수
+// [핵심] 금액을 한글로 바꾸는 헬퍼 함수
 function formatKoreanMoney(num) {
     if (num < 10000) return num.toLocaleString() + "원";
     const unit = ["", "만", "억", "조"];
@@ -50,10 +50,10 @@ function formatKoreanMoney(num) {
 
 // 버튼 클릭 이벤트 리스너
 submitBtn.addEventListener('click', function() {
-    register(); // [핵심] 클릭 시 register 함수 호출
+    register();
 });
 
-// [핵심 요구사항] 서버 통신 및 로직 처리를 담당하는 register 함수
+// 서버 통신 및 로직 처리를 담당하는 register 함수
 function register() {
     // 1. 입력 데이터 수집
     const dest = document.getElementById('destination').value;
@@ -86,42 +86,38 @@ function register() {
         destination: dest,
         duration: duration,
         budget: budget,
-        transport: selectedTransports, // 배열 형태
+        transport: selectedTransports,
         style: style,
         preference: preference
     };
 
-    // [핵심 요구사항] fetch를 이용한 POST 요청
+    // fetch 통신 시도
     fetch(SERVER_URL, {
         method: 'POST',
-        headers: {
-            'Content-Type': 'application/json'
-        },
-        body: JSON.stringify(requestData) // JSON 형태로 변환하여 전송
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify(requestData)
     })
     .then(response => {
-        if (!response.ok) {
-            throw new Error('Network response was not ok');
-        }
+        if (!response.ok) throw new Error('Network response was not ok');
         return response.json();
     })
     .then(data => {
-        // 서버로부터 성공적으로 응답을 받았을 때
         loader.style.display = 'none';
-        resultContent.style.display = 'block';
+        // [수정] Flex 적용을 위해 block 대신 flex 사용
+        resultContent.style.display = 'flex';
         renderResult(data);
     })
     .catch(error => {
-        // 서버 연결 실패 또는 URL이 비어있을 때 (현재 단계)
         console.warn("서버 통신 실패 (Demo 모드로 전환):", error);
 
-        // [데모용] 서버가 없어도 작동하도록 가짜 데이터 생성 함수 실행
+        // [데모용] 가짜 데이터 생성 및 렌더링
         setTimeout(() => {
             const mockResponse = generateDynamicMockResponse(dest, duration, budget, selectedTransports);
             loader.style.display = 'none';
-            resultContent.style.display = 'block';
+            // [수정] Flex 적용을 위해 block 대신 flex 사용
+            resultContent.style.display = 'flex';
             renderResult(mockResponse);
-        }, 1500); // 1.5초 딜레이 연출
+        }, 1500);
     });
 }
 
@@ -144,11 +140,9 @@ function renderResult(data) {
         <div class="timeline">
     `;
 
-    // 일자별 계획이 있는지 확인
     if (data.daily_plans && data.daily_plans.length > 0) {
         data.daily_plans.forEach(dayPlan => {
             html += `<div class="day-block"><div class="day-marker"></div><div class="day-title">Day ${dayPlan.day}: ${dayPlan.date_theme}</div>`;
-
             if (dayPlan.activities) {
                 dayPlan.activities.forEach(act => {
                     html += `
@@ -171,11 +165,15 @@ function renderResult(data) {
     resultContent.innerHTML = html;
 }
 
-// [데모용] 동적 데이터 생성 함수 (서버 없을 때 Fallback)
+// [데모용] 동적 데이터 생성 함수
 function generateDynamicMockResponse(destination, duration, budget, transports) {
     const isLowBudget = budget < 100000;
     const transportStr = transports.join(', ');
     const days = parseInt(duration);
+
+    // [수정] 총 비용 계산 및 한글 포맷팅 적용
+    const rawTotalCost = isLowBudget ? (days * budget) + 100000 : (days * budget);
+    const formattedTotalCost = "약 " + formatKoreanMoney(rawTotalCost);
 
     let dailyPlans = [];
     for(let i=1; i<=days; i++) {
@@ -214,7 +212,8 @@ function generateDynamicMockResponse(destination, duration, budget, transports) 
         "reality_reason": isLowBudget
             ? `입력하신 예산은 ${destination}의 물가를 고려할 때 다소 부족합니다.`
             : `예산과 일정이 아주 적절합니다. 즐거운 여행 되세요!`,
-        "total_estimated_cost": isLowBudget ? `약 ${(days * budget) + 100000}원` : `약 ${days * budget}원`,
+        // [수정] 위에서 포맷팅한 한글 금액 사용
+        "total_estimated_cost": formattedTotalCost,
         "planner_comment": `요청하신 ${days}일 동안의 일정을 ${transportStr} 이동수단을 고려하여 최적화했습니다.`,
         "daily_plans": dailyPlans
     };
