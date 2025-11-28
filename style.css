@@ -20,36 +20,43 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .subtitle { font-size: 1.1rem; color: var(--text-gray); font-weight: 500; }
 
 /* Layout */
-.container { max-width: 1400px; margin: 0 auto; display: flex; gap: 30px; padding: 0 20px; }
+.container {
+    max-width: 95%; /* 전체 너비 꽉 차게 */
+    margin: 0 auto;
+    display: flex;
+    gap: 30px;
+    padding: 0 20px;
+}
 
-/* [Box Style] 높이 고정 및 Flex 적용 */
+/* [Box Style] 공통 스타일 */
 .box {
     background: var(--white);
     border-radius: 20px;
     padding: 40px;
     box-shadow: var(--shadow);
-    flex: 1;
-    height: 800px;         /* 높이 고정 (중요) */
+    height: 1050px; /* 높이 고정 */
     border: 2px solid transparent;
     transition: 0.3s;
-
-    /* 내부 요소 정렬을 위한 Flex 설정 */
     display: flex;
     flex-direction: column;
 }
 .box:hover { border-color: #D6EBFF; }
 .box-title {
-    font-size: 1.5rem;
-    font-weight: 700;
-    margin-bottom: 30px;
-    padding-bottom: 15px;
-    border-bottom: 2px solid var(--secondary-color);
-    color: var(--text-dark);
-    flex-shrink: 0; /* 제목은 줄어들지 않음 */
+    font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; padding-bottom: 15px;
+    border-bottom: 2px solid var(--secondary-color); color: var(--text-dark); flex-shrink: 0;
 }
 
+/* [중요] 비율 조정 (입력 1 : 결과 1.5) */
+.input-section {
+    flex: 1; /* 입력창은 좁게 */
+}
+.output-section {
+    flex: 1.5; /* 결과창은 1.5배 더 넓게 */
+}
+
+
 /* Form Elements */
-.input-section { overflow-y: auto; } /* 입력창은 전체 스크롤 */
+.input-section { overflow-y: auto; }
 .form-group { margin-bottom: 25px; }
 .form-label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--accent-color); }
 .live-check { font-size: 0.9rem; color: var(--primary-color); font-weight: 700; margin-left: 10px; }
@@ -70,9 +77,9 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .loader { display: none; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 200px auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* [Result Content] Flex Column 적용 */
+/* Result Content */
 .result-content {
-    display: none; /* JS에서 flex로 변경됨 */
+    display: none;
     flex-direction: column;
     height: 100%;
     overflow: hidden;
@@ -80,15 +87,7 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
 
-/* 고정 영역 (Header + Comment) */
-.result-header {
-    background: var(--secondary-color);
-    padding: 20px;
-    border-radius: 15px;
-    margin-bottom: 25px;
-    text-align: center;
-    flex-shrink: 0; /* 고정 (스크롤 안됨) */
-}
+.result-header { background: var(--secondary-color); padding: 20px; border-radius: 15px; margin-bottom: 25px; text-align: center; flex-shrink: 0; }
 .trip-title { font-size: 1.4rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; }
 .reality-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem; color: white; margin-bottom: 10px; }
 .score-high { background-color: var(--success); }
@@ -99,26 +98,14 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .planner-comment {
     background-color: #fff;
     border-left: 5px solid var(--primary-color);
-    padding: 15px;
-    margin-bottom: 25px;
-    font-size: 0.95rem;
-    color: var(--text-gray);
-    line-height: 1.5;
-    box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    flex-shrink: 0; /* 고정 (스크롤 안됨) */
+    padding: 15px; margin-bottom: 25px; font-size: 0.95rem; color: var(--text-gray); line-height: 1.5;
+    box-shadow: 0 2px 8px rgba(0,0,0,0.05); flex-shrink: 0;
 }
 
-/* [Timeline] 여기가 스크롤 되는 영역 */
 .timeline {
-    position: relative;
-    padding-left: 20px;
-    border-left: 2px solid #ddd;
-    flex: 1;            /* 남은 높이를 모두 차지 */
-    overflow-y: auto;   /* 내용이 넘치면 스크롤 생성 */
-    padding-right: 10px;
-    min-height: 0;
+    position: relative; padding-left: 20px; border-left: 2px solid #ddd;
+    flex: 1; overflow-y: auto; padding-right: 10px; min-height: 0;
 }
-/* 스크롤바 디자인 */
 .timeline::-webkit-scrollbar { width: 8px; }
 .timeline::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
 .timeline::-webkit-scrollbar-thumb { background: #ccc; border-radius: 10px; }
@@ -137,7 +124,7 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .act-cost { font-weight: 600; font-size: 0.9rem; color: var(--accent-color); }
 
 @media (max-width: 768px) {
-    .container { flex-direction: column; }
+    .container { flex-direction: column; max-width: 100%; }
     .checkbox-group { grid-template-columns: repeat(2, 1fr); }
     .box { height: auto; display: block; }
     .result-content { display: block; height: auto; }
