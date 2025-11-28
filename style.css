@@ -22,14 +22,14 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 /* Layout */
 .container { max-width: 1400px; margin: 0 auto; display: flex; gap: 30px; padding: 0 20px; }
 
-/* [수정] 박스 스타일: 스크롤 제거 및 Flex 적용 */
+/* [Box Style] 높이 고정 및 Flex 적용 */
 .box {
     background: var(--white);
     border-radius: 20px;
     padding: 40px;
     box-shadow: var(--shadow);
     flex: 1;
-    height: 800px;         /* 높이 고정 */
+    height: 800px;         /* 높이 고정 (중요) */
     border: 2px solid transparent;
     transition: 0.3s;
 
@@ -38,12 +38,18 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
     flex-direction: column;
 }
 .box:hover { border-color: #D6EBFF; }
-.box-title { font-size: 1.5rem; font-weight: 700; margin-bottom: 30px; padding-bottom: 15px; border-bottom: 2px solid var(--secondary-color); color: var(--text-dark); flex-shrink: 0; /* 제목은 줄어들지 않음 */ }
+.box-title {
+    font-size: 1.5rem;
+    font-weight: 700;
+    margin-bottom: 30px;
+    padding-bottom: 15px;
+    border-bottom: 2px solid var(--secondary-color);
+    color: var(--text-dark);
+    flex-shrink: 0; /* 제목은 줄어들지 않음 */
+}
 
 /* Form Elements */
-/* 왼쪽 입력 박스는 내용이 많으면 전체 스크롤 허용 */
-.input-section { overflow-y: auto; }
-
+.input-section { overflow-y: auto; } /* 입력창은 전체 스크롤 */
 .form-group { margin-bottom: 25px; }
 .form-label { display: block; font-weight: 600; margin-bottom: 10px; color: var(--accent-color); }
 .live-check { font-size: 0.9rem; color: var(--primary-color); font-weight: 700; margin-left: 10px; }
@@ -64,12 +70,12 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .loader { display: none; border: 5px solid #f3f3f3; border-top: 5px solid var(--primary-color); border-radius: 50%; width: 50px; height: 50px; animation: spin 1s linear infinite; margin: 200px auto; }
 @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-/* [수정] 결과 컨테이너: 남은 높이를 모두 채우고 Flex Column 적용 */
+/* [Result Content] Flex Column 적용 */
 .result-content {
-    display: none;
+    display: none; /* JS에서 flex로 변경됨 */
     flex-direction: column;
     height: 100%;
-    overflow: hidden; /* 내부 스크롤 제어 */
+    overflow: hidden;
     animation: fadeIn 0.5s ease-in-out;
 }
 @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
@@ -81,7 +87,7 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
     border-radius: 15px;
     margin-bottom: 25px;
     text-align: center;
-    flex-shrink: 0; /* 고정 */
+    flex-shrink: 0; /* 고정 (스크롤 안됨) */
 }
 .trip-title { font-size: 1.4rem; font-weight: 700; color: var(--accent-color); margin-bottom: 10px; }
 .reality-badge { display: inline-block; padding: 8px 16px; border-radius: 20px; font-weight: 800; font-size: 1.1rem; color: white; margin-bottom: 10px; }
@@ -99,19 +105,19 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
     color: var(--text-gray);
     line-height: 1.5;
     box-shadow: 0 2px 8px rgba(0,0,0,0.05);
-    flex-shrink: 0; /* 고정 */
+    flex-shrink: 0; /* 고정 (스크롤 안됨) */
 }
 
-/* [수정] 타임라인: 남은 공간을 차지하고 스크롤 생성 */
+/* [Timeline] 여기가 스크롤 되는 영역 */
 .timeline {
     position: relative;
     padding-left: 20px;
     border-left: 2px solid #ddd;
-    flex: 1;            /* 남은 공간 모두 차지 */
-    overflow-y: auto;   /* 내용 넘치면 스크롤 */
-    padding-right: 10px; /* 스크롤바 공간 확보 */
+    flex: 1;            /* 남은 높이를 모두 차지 */
+    overflow-y: auto;   /* 내용이 넘치면 스크롤 생성 */
+    padding-right: 10px;
+    min-height: 0;
 }
-
 /* 스크롤바 디자인 */
 .timeline::-webkit-scrollbar { width: 8px; }
 .timeline::-webkit-scrollbar-track { background: #f1f1f1; border-radius: 10px; }
@@ -121,10 +127,8 @@ header { background-color: var(--white); text-align: center; padding: 40px 0; ma
 .day-block { margin-bottom: 30px; position: relative; }
 .day-marker { position: absolute; left: -29px; top: 0; width: 16px; height: 16px; background: var(--primary-color); border-radius: 50%; border: 4px solid white; box-shadow: 0 0 0 2px var(--primary-color); }
 .day-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; color: var(--text-dark); }
-
 .activity-card { background: white; border: 1px solid #eee; border-radius: 10px; padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px; transition: 0.2s; }
 .activity-card:hover { transform: translateX(5px); border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
-
 .act-icon { font-size: 1.5rem; }
 .act-info { flex: 1; }
 .act-time { font-size: 0.8rem; color: #888; margin-bottom: 2px; }
