@@ -15,9 +15,9 @@
             --text-dark: #333333;
             --text-gray: #666666;
             --white: #FFFFFF;
-            --shadow: 0 4px 20px rgba(78, 164, 243, 0.15); /* 부드러운 그림자 */
-            --danger: #FF6B6B;              /* 비현실적일 때 경고색 */
-            --success: #51CF66;             /* 현실적일 때 성공색 */
+            --shadow: 0 4px 20px rgba(78, 164, 243, 0.15);
+            --danger: #FF6B6B;
+            --success: #51CF66;
         }
 
         * {
@@ -34,7 +34,7 @@
             padding-bottom: 50px;
         }
 
-        /* 1. Header Area */
+        /* Header */
         header {
             background-color: var(--white);
             text-align: center;
@@ -58,23 +58,22 @@
             font-weight: 500;
         }
 
-        /* 2. Main Layout (Left Input / Right Output) */
+        /* Layout */
         .container {
-            max-width: 1400px; /* 넓은 화면 활용 */
+            max-width: 1400px;
             margin: 0 auto;
-            display: flex;     /* 좌우 배치 핵심 */
-            gap: 30px;         /* 박스 사이 간격 */
+            display: flex;
+            gap: 30px;
             padding: 0 20px;
         }
 
-        /* 공통 박스 스타일 */
         .box {
             background: var(--white);
             border-radius: 20px;
             padding: 40px;
             box-shadow: var(--shadow);
-            flex: 1;          /* 1:1 비율로 공간 차지 */
-            min-height: 700px; /* 최소 높이 확보 */
+            flex: 1;
+            min-height: 700px;
             border: 2px solid transparent;
             transition: 0.3s;
         }
@@ -92,7 +91,7 @@
             color: var(--text-dark);
         }
 
-        /* --- Left Side: Input Form --- */
+        /* Form Elements */
         .form-group {
             margin-bottom: 25px;
         }
@@ -120,6 +119,34 @@
             background-color: var(--white);
         }
 
+        /* --- [NEW] Checkbox Style --- */
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr); /* 3열 배치 */
+            gap: 10px;
+            background-color: #FAFAFA;
+            padding: 15px;
+            border-radius: 10px;
+            border: 2px solid #E1E1E1;
+        }
+
+        .checkbox-label {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.95rem;
+            cursor: pointer;
+            color: var(--text-dark);
+        }
+
+        .checkbox-label input[type="checkbox"] {
+            width: 18px;
+            height: 18px;
+            cursor: pointer;
+            accent-color: var(--primary-color); /* 체크 시 테마색 적용 */
+        }
+        /* ---------------------------- */
+
         .submit-btn {
             width: 100%;
             padding: 18px;
@@ -140,8 +167,7 @@
             transform: translateY(-2px);
         }
 
-        /* --- Right Side: Output Result --- */
-        /* 초기 안내 문구 */
+        /* Output & Loader */
         .placeholder-text {
             text-align: center;
             color: #999;
@@ -149,9 +175,8 @@
             font-size: 1.1rem;
         }
 
-        /* 로딩 스피너 */
         .loader {
-            display: none; /* 평소엔 숨김 */
+            display: none;
             border: 5px solid #f3f3f3;
             border-top: 5px solid var(--primary-color);
             border-radius: 50%;
@@ -161,14 +186,10 @@
             margin: 200px auto;
         }
 
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
 
-        /* 결과 화면 스타일 */
         .result-content {
-            display: none; /* 평소엔 숨김 */
+            display: none;
             animation: fadeIn 0.5s ease-in-out;
         }
 
@@ -177,7 +198,6 @@
             to { opacity: 1; transform: translateY(0); }
         }
 
-        /* 1. 제목 및 현실성 점수 */
         .result-header {
             background: var(--secondary-color);
             padding: 20px;
@@ -212,7 +232,6 @@
             color: var(--text-dark);
         }
 
-        /* 2. 플래너 코멘트 */
         .planner-comment {
             background-color: #fff;
             border-left: 5px solid var(--primary-color);
@@ -224,54 +243,28 @@
             box-shadow: 0 2px 8px rgba(0,0,0,0.05);
         }
 
-        /* 3. 타임라인 (일정표) */
         .timeline {
             position: relative;
             padding-left: 20px;
             border-left: 2px solid #ddd;
         }
 
-        .day-block {
-            margin-bottom: 30px;
-            position: relative;
-        }
-
+        .day-block { margin-bottom: 30px; position: relative; }
         .day-marker {
-            position: absolute;
-            left: -29px;
-            top: 0;
-            width: 16px;
-            height: 16px;
+            position: absolute; left: -29px; top: 0;
+            width: 16px; height: 16px;
             background: var(--primary-color);
-            border-radius: 50%;
-            border: 4px solid white;
+            border-radius: 50%; border: 4px solid white;
             box-shadow: 0 0 0 2px var(--primary-color);
         }
-
-        .day-title {
-            font-weight: 800;
-            font-size: 1.1rem;
-            margin-bottom: 15px;
-            color: var(--text-dark);
-        }
+        .day-title { font-weight: 800; font-size: 1.1rem; margin-bottom: 15px; color: var(--text-dark); }
 
         .activity-card {
-            background: white;
-            border: 1px solid #eee;
-            border-radius: 10px;
-            padding: 15px;
-            margin-bottom: 10px;
-            display: flex;
-            align-items: center;
-            gap: 15px;
+            background: white; border: 1px solid #eee; border-radius: 10px;
+            padding: 15px; margin-bottom: 10px; display: flex; align-items: center; gap: 15px;
             transition: 0.2s;
         }
-
-        .activity-card:hover {
-            transform: translateX(5px);
-            border-color: var(--primary-color);
-            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
-        }
+        .activity-card:hover { transform: translateX(5px); border-color: var(--primary-color); box-shadow: 0 4px 10px rgba(0,0,0,0.05); }
 
         .act-icon { font-size: 1.5rem; }
         .act-info { flex: 1; }
@@ -280,14 +273,9 @@
         .act-desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
         .act-cost { font-weight: 600; font-size: 0.9rem; color: var(--accent-color); }
 
-        /* 반응형 (모바일) */
         @media (max-width: 768px) {
-            .container {
-                flex-direction: column; /* 모바일에서 위아래로 배치 */
-            }
-            .box {
-                min-height: auto;
-            }
+            .container { flex-direction: column; }
+            .checkbox-group { grid-template-columns: repeat(2, 1fr); }
         }
     </style>
 </head>
@@ -299,28 +287,30 @@
     </header>
 
     <div class="container">
-        
+
         <section class="box input-section">
             <h2 class="box-title">어떤 여행을 하고 싶나요? ✈️</h2>
-            
+
             <form id="travelForm">
                 <div class="form-group">
                     <label class="form-label">여행 장소 (국가 및 도시)</label>
-                    <input type="text" id="destination" class="form-input" placeholder="예: 일본 오사카, 프랑스 파리">
+                    <input type="text" id="destination" class="form-input" placeholder="예: 일본 오사카, 제주도">
                 </div>
 
-                <div class="form-group" style="display: flex; gap: 10px;">
-                    <div style="flex:1">
-                        <label class="form-label">여행 기간 (일)</label>
-                        <input type="number" id="duration" class="form-input" placeholder="3" min="1">
-                    </div>
-                    <div style="flex:1">
-                        <label class="form-label">이동 수단</label>
-                        <select id="transport" class="form-select">
-                            <option value="대중교통">대중교통 (버스/지하철)</option>
-                            <option value="렌트카">렌트카</option>
-                            <option value="도보/택시">도보 및 택시</option>
-                        </select>
+                <div class="form-group">
+                    <label class="form-label">여행 기간 (일)</label>
+                    <input type="number" id="duration" class="form-input" placeholder="3" min="1">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">이동 수단 (다중 선택 가능)</label>
+                    <div class="checkbox-group">
+                        <label class="checkbox-label"><input type="checkbox" name="transport" value="버스"> 버스</label>
+                        <label class="checkbox-label"><input type="checkbox" name="transport" value="지하철"> 지하철</label>
+                        <label class="checkbox-label"><input type="checkbox" name="transport" value="비행기"> 비행기</label>
+                        <label class="checkbox-label"><input type="checkbox" name="transport" value="렌트카"> 렌트카</label>
+                        <label class="checkbox-label"><input type="checkbox" name="transport" value="택시"> 택시</label>
+                        <label class="checkbox-label"><input type="checkbox" name="transport" value="도보"> 도보</label>
                     </div>
                 </div>
 
@@ -351,7 +341,7 @@
 
         <section class="box output-section">
             <h2 class="box-title">A.I.R가 추천하는 당신의 여행! 🤖</h2>
-            
+
             <div id="placeholder" class="placeholder-text">
                 좌측 정보를 입력하고 버튼을 누르면<br>
                 AI가 현실성을 분석하고 계획을 세워줍니다.
@@ -359,8 +349,7 @@
 
             <div id="loader" class="loader"></div>
 
-            <div id="resultContent" class="result-content">
-                </div>
+            <div id="resultContent" class="result-content"></div>
         </section>
     </div>
 
@@ -370,37 +359,44 @@
         const loader = document.getElementById('loader');
         const resultContent = document.getElementById('resultContent');
 
-        // 버튼 클릭 이벤트 리스너
         submitBtn.addEventListener('click', function() {
-            // 1. 간단한 유효성 검사
+            // 입력값 가져오기
             const dest = document.getElementById('destination').value;
             const duration = document.getElementById('duration').value;
             const budget = document.getElementById('budget').value;
 
+            // [변경] 체크박스 값 가져오기 (배열로 변환)
+            const transportCheckboxes = document.querySelectorAll('input[name="transport"]:checked');
+            const selectedTransports = Array.from(transportCheckboxes).map(cb => cb.value);
+
+            // 유효성 검사
             if (!dest || !duration || !budget) {
                 alert("여행지, 기간, 예산은 필수 입력 사항입니다!");
                 return;
             }
 
-            // 2. UI 상태 변경 (로딩 시작)
+            // [변경] 이동수단 최소 1개 선택 검사
+            if (selectedTransports.length === 0) {
+                alert("이동 수단을 최소 1개 이상 선택해주세요!");
+                return;
+            }
+
+            // UI 변경
             placeholder.style.display = 'none';
             resultContent.style.display = 'none';
             loader.style.display = 'block';
 
-            // 3. AI 분석 시뮬레이션 (1.5초 후 결과 표시)
+            // 분석 시뮬레이션
             setTimeout(() => {
-                // 실제로는 여기서 백엔드 API를 호출하지만, 지금은 가짜 데이터를 생성합니다.
-                const mockResponse = generateMockResponse(dest, duration, budget);
+                const mockResponse = generateMockResponse(dest, duration, budget, selectedTransports);
                 renderResult(mockResponse);
-                
+
                 loader.style.display = 'none';
                 resultContent.style.display = 'block';
             }, 1500);
         });
 
-        // [중요] 화면에 결과를 그려주는 함수
         function renderResult(data) {
-            // 현실성 점수에 따른 색상 결정
             let scoreClass = 'score-mid';
             if(data.reality_score >= 4) scoreClass = 'score-high';
             if(data.reality_score <= 2) scoreClass = 'score-low';
@@ -424,7 +420,6 @@
                 <div class="timeline">
             `;
 
-            // 일정표 반복문 (Daily Plans)
             data.daily_plans.forEach(dayPlan => {
                 html += `
                     <div class="day-block">
@@ -432,7 +427,6 @@
                         <div class="day-title">Day ${dayPlan.day}: ${dayPlan.date_theme}</div>
                 `;
 
-                // 세부 활동 반복문
                 dayPlan.activities.forEach(act => {
                     html += `
                         <div class="activity-card">
@@ -447,29 +441,28 @@
                     `;
                 });
 
-                html += `</div>`; // day-block 닫기
+                html += `</div>`;
             });
 
-            html += `</div>`; // timeline 닫기
-            
+            html += `</div>`;
             resultContent.innerHTML = html;
         }
 
-        // [MOCK] 가짜 데이터를 생성하는 함수 (나중에 AI 연결 시 삭제될 부분)
-        function generateMockResponse(destination, duration, budget) {
-            // 예산이 너무 적으면(10만원 미만) 낮은 점수를 주는 로직 시뮬레이션
+        // [변경] 이동수단(transports)을 인자로 받도록 수정
+        function generateMockResponse(destination, duration, budget, transports) {
             const isLowBudget = budget < 100000;
-            
+            const transportStr = transports.join(', '); // 예: "버스, 지하철"
+
             return {
                 "title": `[A.I.R] ${destination} 맞춤 여행 플랜`,
                 "reality_score": isLowBudget ? 2 : 5,
-                "reality_reason": isLowBudget 
-                    ? `입력하신 예산(${budget}원)은 ${destination}의 평균 물가 대비 다소 부족합니다.` 
-                    : `예산이 ${destination}를 즐기기에 충분하며, 동선이 효율적입니다.`,
+                "reality_reason": isLowBudget
+                    ? `입력하신 예산(${budget}원)은 ${destination}의 물가를 고려할 때 다소 부족합니다.`
+                    : `선택하신 이동수단(${transportStr})과 예산이 적절하게 조화됩니다.`,
                 "total_estimated_cost": isLowBudget ? "약 250,000원 (예산 초과 예상)" : "약 450,000원",
-                "planner_comment": isLowBudget 
-                    ? "식비와 입장료를 아끼기 위해 무료 관광지를 위주로 구성했습니다." 
-                    : "여유로운 예산 덕분에 인기 명소와 맛집을 골고루 배치했습니다.",
+                "planner_comment": isLowBudget
+                    ? `선택하신 '${transportStr}' 중 비용이 저렴한 수단을 우선적으로 배치했습니다.`
+                    : `${transportStr}을(를) 적절히 이용하여 이동 효율을 높였습니다.`,
                 "daily_plans": [
                     {
                         "day": 1,
@@ -478,36 +471,29 @@
                             {
                                 "time": "오후 2:00",
                                 "place": `${destination} 공항 도착`,
-                                "description": "공항 리무진을 타고 시내로 이동합니다.",
+                                "description": `${transports[0] || '대중교통'}을 이용하여 숙소로 이동합니다.`,
                                 "icon": "✈️",
                                 "cost": "15,000"
                             },
                             {
                                 "time": "오후 5:00",
-                                "place": "시내 중심가 & 야시장",
-                                "description": "현지 분위기를 느끼며 저녁 식사를 합니다.",
-                                "icon": "🍜",
-                                "cost": "25,000"
+                                "place": "시내 중심가",
+                                "description": "주변을 산책하며 현지 분위기를 즐깁니다.",
+                                "icon": "🏙️",
+                                "cost": "0"
                             }
                         ]
                     },
                     {
                         "day": 2,
-                        "date_theme": "주요 랜드마크 투어",
+                        "date_theme": "주요 명소 방문",
                         "activities": [
                             {
                                 "time": "오전 10:00",
-                                "place": "대표 유적지 방문",
-                                "description": "역사적인 장소를 둘러보며 사진을 남깁니다.",
+                                "place": "랜드마크 투어",
+                                "description": "대표 관광지를 방문합니다.",
                                 "icon": "📸",
                                 "cost": "20,000"
-                            },
-                            {
-                                "time": "오후 3:00",
-                                "place": "유명 카페 거리",
-                                "description": "잠시 휴식을 취하며 디저트를 즐깁니다.",
-                                "icon": "☕",
-                                "cost": "10,000"
                             }
                         ]
                     }
