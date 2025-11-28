@@ -1,3 +1,6 @@
+// [핵심 요구사항] API 서버 주소 정의 (현재는 빈 값)
+const SERVER_URL = '';
+
 // DOM 요소 가져오기
 const durationInput = document.getElementById('duration');
 const budgetInput = document.getElementById('budget');
@@ -45,14 +48,25 @@ function formatKoreanMoney(num) {
     return str.trim() + "원";
 }
 
-// 버튼 클릭 로직
+// 버튼 클릭 이벤트 리스너
 submitBtn.addEventListener('click', function() {
+    register(); // [핵심] 클릭 시 register 함수 호출
+});
+
+// [핵심 요구사항] 서버 통신 및 로직 처리를 담당하는 register 함수
+function register() {
+    // 1. 입력 데이터 수집
     const dest = document.getElementById('destination').value;
     const duration = document.getElementById('duration').value;
     const budget = document.getElementById('budget').value;
+    const style = document.getElementById('style').value;
+    const preference = document.getElementById('preference').value;
+
+    // 체크박스 값 수집
     const transportCheckboxes = document.querySelectorAll('input[name="transport"]:checked');
     const selectedTransports = Array.from(transportCheckboxes).map(cb => cb.value);
 
+    // 2. 유효성 검사
     if (!dest || !duration || !budget) {
         alert("여행지, 기간, 예산은 필수 입력 사항입니다!");
         return;
@@ -62,19 +76,56 @@ submitBtn.addEventListener('click', function() {
         return;
     }
 
+    // 3. UI 상태 변경 (로딩 시작)
     placeholder.style.display = 'none';
     resultContent.style.display = 'none';
     loader.style.display = 'block';
 
-    setTimeout(() => {
-        // 동적 데이터 생성 함수 호출
-        const mockResponse = generateDynamicMockResponse(dest, duration, budget, selectedTransports);
-        renderResult(mockResponse);
+    // 4. 서버로 보낼 데이터 객체 생성
+    const requestData = {
+        destination: dest,
+        duration: duration,
+        budget: budget,
+        transport: selectedTransports, // 배열 형태
+        style: style,
+        preference: preference
+    };
+
+    // [핵심 요구사항] fetch를 이용한 POST 요청
+    fetch(SERVER_URL, {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json'
+        },
+        body: JSON.stringify(requestData) // JSON 형태로 변환하여 전송
+    })
+    .then(response => {
+        if (!response.ok) {
+            throw new Error('Network response was not ok');
+        }
+        return response.json();
+    })
+    .then(data => {
+        // 서버로부터 성공적으로 응답을 받았을 때
         loader.style.display = 'none';
         resultContent.style.display = 'block';
-    }, 1500);
-});
+        renderResult(data);
+    })
+    .catch(error => {
+        // 서버 연결 실패 또는 URL이 비어있을 때 (현재 단계)
+        console.warn("서버 통신 실패 (Demo 모드로 전환):", error);
 
+        // [데모용] 서버가 없어도 작동하도록 가짜 데이터 생성 함수 실행
+        setTimeout(() => {
+            const mockResponse = generateDynamicMockResponse(dest, duration, budget, selectedTransports);
+            loader.style.display = 'none';
+            resultContent.style.display = 'block';
+            renderResult(mockResponse);
+        }, 1500); // 1.5초 딜레이 연출
+    });
+}
+
+// 화면에 결과를 그려주는 함수 (Render)
 function renderResult(data) {
     let scoreClass = 'score-mid';
     if(data.reality_score >= 4) scoreClass = 'score-high';
@@ -93,34 +144,39 @@ function renderResult(data) {
         <div class="timeline">
     `;
 
-    data.daily_plans.forEach(dayPlan => {
-        html += `<div class="day-block"><div class="day-marker"></div><div class="day-title">Day ${dayPlan.day}: ${dayPlan.date_theme}</div>`;
-        dayPlan.activities.forEach(act => {
-            html += `
-                <div class="activity-card">
-                    <div class="act-icon">${act.icon}</div>
-                    <div class="act-info">
-                        <div class="act-time">${act.time}</div>
-                        <div class="act-name">${act.place}</div>
-                        <div class="act-desc">${act.description}</div>
-                    </div>
-                    <div class="act-cost">${act.cost}원</div>
-                </div>`;
+    // 일자별 계획이 있는지 확인
+    if (data.daily_plans && data.daily_plans.length > 0) {
+        data.daily_plans.forEach(dayPlan => {
+            html += `<div class="day-block"><div class="day-marker"></div><div class="day-title">Day ${dayPlan.day}: ${dayPlan.date_theme}</div>`;
+
+            if (dayPlan.activities) {
+                dayPlan.activities.forEach(act => {
+                    html += `
+                        <div class="activity-card">
+                            <div class="act-icon">${act.icon}</div>
+                            <div class="act-info">
+                                <div class="act-time">${act.time}</div>
+                                <div class="act-name">${act.place}</div>
+                                <div class="act-desc">${act.description}</div>
+                            </div>
+                            <div class="act-cost">${act.cost}원</div>
+                        </div>`;
+                });
+            }
+            html += `</div>`;
         });
-        html += `</div>`;
-    });
+    }
 
     html += `</div>`;
     resultContent.innerHTML = html;
 }
 
-// 3. 동적 데이터 생성 (입력 기간만큼 반복문 돌림)
+// [데모용] 동적 데이터 생성 함수 (서버 없을 때 Fallback)
 function generateDynamicMockResponse(destination, duration, budget, transports) {
     const isLowBudget = budget < 100000;
     const transportStr = transports.join(', ');
-    const days = parseInt(duration); // 입력받은 일수
+    const days = parseInt(duration);
 
-    // 일자별 계획 생성 (Loop)
     let dailyPlans = [];
     for(let i=1; i<=days; i++) {
         dailyPlans.push({
