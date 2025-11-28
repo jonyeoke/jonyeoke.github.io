@@ -1,0 +1,519 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A.I.R - Artificial Intelligence's Route</title>
+    <link rel="stylesheet" as="style" crossorigin href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.8/dist/web/static/pretendard.css" />
+    
+    <style>
+        /* [Theme: Sky Blue & White] */
+        :root {
+            --primary-color: #4EA4F3;       /* 청량한 하늘색 */
+            --secondary-color: #EDF7FF;     /* 아주 연한 하늘색 배경 */
+            --accent-color: #0066CC;        /* 진한 파랑 포인트 */
+            --text-dark: #333333;
+            --text-gray: #666666;
+            --white: #FFFFFF;
+            --shadow: 0 4px 20px rgba(78, 164, 243, 0.15); /* 부드러운 그림자 */
+            --danger: #FF6B6B;              /* 비현실적일 때 경고색 */
+            --success: #51CF66;             /* 현실적일 때 성공색 */
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Pretendard', sans-serif;
+        }
+
+        body {
+            background-color: var(--secondary-color);
+            color: var(--text-dark);
+            line-height: 1.6;
+            padding-bottom: 50px;
+        }
+
+        /* 1. Header Area */
+        header {
+            background-color: var(--white);
+            text-align: center;
+            padding: 40px 0;
+            margin-bottom: 40px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.05);
+            border-bottom: 5px solid var(--primary-color);
+        }
+
+        .logo {
+            font-size: 3rem;
+            font-weight: 800;
+            color: var(--primary-color);
+            letter-spacing: 2px;
+            margin-bottom: 10px;
+        }
+
+        .subtitle {
+            font-size: 1.1rem;
+            color: var(--text-gray);
+            font-weight: 500;
+        }
+
+        /* 2. Main Layout (Left Input / Right Output) */
+        .container {
+            max-width: 1400px; /* 넓은 화면 활용 */
+            margin: 0 auto;
+            display: flex;     /* 좌우 배치 핵심 */
+            gap: 30px;         /* 박스 사이 간격 */
+            padding: 0 20px;
+        }
+
+        /* 공통 박스 스타일 */
+        .box {
+            background: var(--white);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: var(--shadow);
+            flex: 1;          /* 1:1 비율로 공간 차지 */
+            min-height: 700px; /* 최소 높이 확보 */
+            border: 2px solid transparent;
+            transition: 0.3s;
+        }
+
+        .box:hover {
+            border-color: #D6EBFF;
+        }
+
+        .box-title {
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin-bottom: 30px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid var(--secondary-color);
+            color: var(--text-dark);
+        }
+
+        /* --- Left Side: Input Form --- */
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-label {
+            display: block;
+            font-weight: 600;
+            margin-bottom: 10px;
+            color: var(--accent-color);
+        }
+
+        .form-input, .form-select, .form-textarea {
+            width: 100%;
+            padding: 15px;
+            border: 2px solid #E1E1E1;
+            border-radius: 10px;
+            font-size: 1rem;
+            transition: 0.3s;
+            background-color: #FAFAFA;
+        }
+
+        .form-input:focus, .form-select:focus, .form-textarea:focus {
+            border-color: var(--primary-color);
+            outline: none;
+            background-color: var(--white);
+        }
+
+        .submit-btn {
+            width: 100%;
+            padding: 18px;
+            background-color: var(--primary-color);
+            color: var(--white);
+            border: none;
+            border-radius: 10px;
+            font-size: 1.2rem;
+            font-weight: 700;
+            cursor: pointer;
+            transition: 0.3s;
+            margin-top: 20px;
+            box-shadow: 0 4px 15px rgba(78, 164, 243, 0.4);
+        }
+
+        .submit-btn:hover {
+            background-color: var(--accent-color);
+            transform: translateY(-2px);
+        }
+
+        /* --- Right Side: Output Result --- */
+        /* 초기 안내 문구 */
+        .placeholder-text {
+            text-align: center;
+            color: #999;
+            margin-top: 200px;
+            font-size: 1.1rem;
+        }
+
+        /* 로딩 스피너 */
+        .loader {
+            display: none; /* 평소엔 숨김 */
+            border: 5px solid #f3f3f3;
+            border-top: 5px solid var(--primary-color);
+            border-radius: 50%;
+            width: 50px;
+            height: 50px;
+            animation: spin 1s linear infinite;
+            margin: 200px auto;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 결과 화면 스타일 */
+        .result-content {
+            display: none; /* 평소엔 숨김 */
+            animation: fadeIn 0.5s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* 1. 제목 및 현실성 점수 */
+        .result-header {
+            background: var(--secondary-color);
+            padding: 20px;
+            border-radius: 15px;
+            margin-bottom: 25px;
+            text-align: center;
+        }
+
+        .trip-title {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: var(--accent-color);
+            margin-bottom: 10px;
+        }
+
+        .reality-badge {
+            display: inline-block;
+            padding: 8px 16px;
+            border-radius: 20px;
+            font-weight: 800;
+            font-size: 1.1rem;
+            color: white;
+            margin-bottom: 10px;
+        }
+        .score-high { background-color: var(--success); }
+        .score-low { background-color: var(--danger); }
+        .score-mid { background-color: #FAB005; }
+
+        .total-cost {
+            font-size: 1.2rem;
+            font-weight: 700;
+            color: var(--text-dark);
+        }
+
+        /* 2. 플래너 코멘트 */
+        .planner-comment {
+            background-color: #fff;
+            border-left: 5px solid var(--primary-color);
+            padding: 15px;
+            margin-bottom: 25px;
+            font-size: 0.95rem;
+            color: var(--text-gray);
+            line-height: 1.5;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
+
+        /* 3. 타임라인 (일정표) */
+        .timeline {
+            position: relative;
+            padding-left: 20px;
+            border-left: 2px solid #ddd;
+        }
+
+        .day-block {
+            margin-bottom: 30px;
+            position: relative;
+        }
+
+        .day-marker {
+            position: absolute;
+            left: -29px;
+            top: 0;
+            width: 16px;
+            height: 16px;
+            background: var(--primary-color);
+            border-radius: 50%;
+            border: 4px solid white;
+            box-shadow: 0 0 0 2px var(--primary-color);
+        }
+
+        .day-title {
+            font-weight: 800;
+            font-size: 1.1rem;
+            margin-bottom: 15px;
+            color: var(--text-dark);
+        }
+
+        .activity-card {
+            background: white;
+            border: 1px solid #eee;
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            transition: 0.2s;
+        }
+
+        .activity-card:hover {
+            transform: translateX(5px);
+            border-color: var(--primary-color);
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .act-icon { font-size: 1.5rem; }
+        .act-info { flex: 1; }
+        .act-time { font-size: 0.8rem; color: #888; margin-bottom: 2px; }
+        .act-name { font-weight: 700; font-size: 1rem; color: #333; }
+        .act-desc { font-size: 0.85rem; color: #666; margin-top: 4px; }
+        .act-cost { font-weight: 600; font-size: 0.9rem; color: var(--accent-color); }
+
+        /* 반응형 (모바일) */
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column; /* 모바일에서 위아래로 배치 */
+            }
+            .box {
+                min-height: auto;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="logo">A.I.R</div>
+        <div class="subtitle">Artificial Intelligence's Route</div>
+    </header>
+
+    <div class="container">
+        
+        <section class="box input-section">
+            <h2 class="box-title">어떤 여행을 하고 싶나요? ✈️</h2>
+            
+            <form id="travelForm">
+                <div class="form-group">
+                    <label class="form-label">여행 장소 (국가 및 도시)</label>
+                    <input type="text" id="destination" class="form-input" placeholder="예: 일본 오사카, 프랑스 파리">
+                </div>
+
+                <div class="form-group" style="display: flex; gap: 10px;">
+                    <div style="flex:1">
+                        <label class="form-label">여행 기간 (일)</label>
+                        <input type="number" id="duration" class="form-input" placeholder="3" min="1">
+                    </div>
+                    <div style="flex:1">
+                        <label class="form-label">이동 수단</label>
+                        <select id="transport" class="form-select">
+                            <option value="대중교통">대중교통 (버스/지하철)</option>
+                            <option value="렌트카">렌트카</option>
+                            <option value="도보/택시">도보 및 택시</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">여행 스타일</label>
+                    <select id="style" class="form-select">
+                        <option value="미식">🍜 미식형 (맛집 투어)</option>
+                        <option value="관광">📸 관광형 (유적지/랜드마크)</option>
+                        <option value="쇼핑">🛍️ 쇼핑형 (쇼핑몰/편집샵)</option>
+                        <option value="휴양">🌿 힐링/휴양형</option>
+                        <option value="액티비티">🎢 액티비티형</option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">1인당 1일 예산 (원)</label>
+                    <input type="number" id="budget" class="form-input" placeholder="예: 150000">
+                </div>
+
+                <div class="form-group">
+                    <label class="form-label">추가 선호사항 (선택)</label>
+                    <textarea id="preference" class="form-textarea" rows="3" placeholder="예: 너무 빡빡한 일정은 싫어요. 카페는 꼭 하루에 1번 가고 싶어요."></textarea>
+                </div>
+
+                <button type="button" id="submitBtn" class="submit-btn">여행 진단 및 계획 생성 ✨</button>
+            </form>
+        </section>
+
+        <section class="box output-section">
+            <h2 class="box-title">A.I.R가 추천하는 당신의 여행! 🤖</h2>
+            
+            <div id="placeholder" class="placeholder-text">
+                좌측 정보를 입력하고 버튼을 누르면<br>
+                AI가 현실성을 분석하고 계획을 세워줍니다.
+            </div>
+
+            <div id="loader" class="loader"></div>
+
+            <div id="resultContent" class="result-content">
+                </div>
+        </section>
+    </div>
+
+    <script>
+        const submitBtn = document.getElementById('submitBtn');
+        const placeholder = document.getElementById('placeholder');
+        const loader = document.getElementById('loader');
+        const resultContent = document.getElementById('resultContent');
+
+        // 버튼 클릭 이벤트 리스너
+        submitBtn.addEventListener('click', function() {
+            // 1. 간단한 유효성 검사
+            const dest = document.getElementById('destination').value;
+            const duration = document.getElementById('duration').value;
+            const budget = document.getElementById('budget').value;
+
+            if (!dest || !duration || !budget) {
+                alert("여행지, 기간, 예산은 필수 입력 사항입니다!");
+                return;
+            }
+
+            // 2. UI 상태 변경 (로딩 시작)
+            placeholder.style.display = 'none';
+            resultContent.style.display = 'none';
+            loader.style.display = 'block';
+
+            // 3. AI 분석 시뮬레이션 (1.5초 후 결과 표시)
+            setTimeout(() => {
+                // 실제로는 여기서 백엔드 API를 호출하지만, 지금은 가짜 데이터를 생성합니다.
+                const mockResponse = generateMockResponse(dest, duration, budget);
+                renderResult(mockResponse);
+                
+                loader.style.display = 'none';
+                resultContent.style.display = 'block';
+            }, 1500);
+        });
+
+        // [중요] 화면에 결과를 그려주는 함수
+        function renderResult(data) {
+            // 현실성 점수에 따른 색상 결정
+            let scoreClass = 'score-mid';
+            if(data.reality_score >= 4) scoreClass = 'score-high';
+            if(data.reality_score <= 2) scoreClass = 'score-low';
+
+            let html = `
+                <div class="result-header">
+                    <div class="trip-title">${data.title}</div>
+                    <span class="reality-badge ${scoreClass}">현실성 점수: ${data.reality_score} / 5.0</span>
+                    <div class="total-cost">총 예상 비용: ${data.total_estimated_cost}</div>
+                </div>
+
+                <div class="planner-comment">
+                    <strong>💡 Planner's Comment:</strong><br>
+                    ${data.planner_comment}
+                    <br><br>
+                    <small style="color:${data.reality_score < 3 ? 'red' : 'green'}">
+                        *판단 근거: ${data.reality_reason}
+                    </small>
+                </div>
+
+                <div class="timeline">
+            `;
+
+            // 일정표 반복문 (Daily Plans)
+            data.daily_plans.forEach(dayPlan => {
+                html += `
+                    <div class="day-block">
+                        <div class="day-marker"></div>
+                        <div class="day-title">Day ${dayPlan.day}: ${dayPlan.date_theme}</div>
+                `;
+
+                // 세부 활동 반복문
+                dayPlan.activities.forEach(act => {
+                    html += `
+                        <div class="activity-card">
+                            <div class="act-icon">${act.icon}</div>
+                            <div class="act-info">
+                                <div class="act-time">${act.time}</div>
+                                <div class="act-name">${act.place}</div>
+                                <div class="act-desc">${act.description}</div>
+                            </div>
+                            <div class="act-cost">${act.cost}원</div>
+                        </div>
+                    `;
+                });
+
+                html += `</div>`; // day-block 닫기
+            });
+
+            html += `</div>`; // timeline 닫기
+            
+            resultContent.innerHTML = html;
+        }
+
+        // [MOCK] 가짜 데이터를 생성하는 함수 (나중에 AI 연결 시 삭제될 부분)
+        function generateMockResponse(destination, duration, budget) {
+            // 예산이 너무 적으면(10만원 미만) 낮은 점수를 주는 로직 시뮬레이션
+            const isLowBudget = budget < 100000;
+            
+            return {
+                "title": `[A.I.R] ${destination} 맞춤 여행 플랜`,
+                "reality_score": isLowBudget ? 2 : 5,
+                "reality_reason": isLowBudget 
+                    ? `입력하신 예산(${budget}원)은 ${destination}의 평균 물가 대비 다소 부족합니다.` 
+                    : `예산이 ${destination}를 즐기기에 충분하며, 동선이 효율적입니다.`,
+                "total_estimated_cost": isLowBudget ? "약 250,000원 (예산 초과 예상)" : "약 450,000원",
+                "planner_comment": isLowBudget 
+                    ? "식비와 입장료를 아끼기 위해 무료 관광지를 위주로 구성했습니다." 
+                    : "여유로운 예산 덕분에 인기 명소와 맛집을 골고루 배치했습니다.",
+                "daily_plans": [
+                    {
+                        "day": 1,
+                        "date_theme": "도착 및 시내 탐방",
+                        "activities": [
+                            {
+                                "time": "오후 2:00",
+                                "place": `${destination} 공항 도착`,
+                                "description": "공항 리무진을 타고 시내로 이동합니다.",
+                                "icon": "✈️",
+                                "cost": "15,000"
+                            },
+                            {
+                                "time": "오후 5:00",
+                                "place": "시내 중심가 & 야시장",
+                                "description": "현지 분위기를 느끼며 저녁 식사를 합니다.",
+                                "icon": "🍜",
+                                "cost": "25,000"
+                            }
+                        ]
+                    },
+                    {
+                        "day": 2,
+                        "date_theme": "주요 랜드마크 투어",
+                        "activities": [
+                            {
+                                "time": "오전 10:00",
+                                "place": "대표 유적지 방문",
+                                "description": "역사적인 장소를 둘러보며 사진을 남깁니다.",
+                                "icon": "📸",
+                                "cost": "20,000"
+                            },
+                            {
+                                "time": "오후 3:00",
+                                "place": "유명 카페 거리",
+                                "description": "잠시 휴식을 취하며 디저트를 즐깁니다.",
+                                "icon": "☕",
+                                "cost": "10,000"
+                            }
+                        ]
+                    }
+                ]
+            };
+        }
+    </script>
+</body>
+</html>
