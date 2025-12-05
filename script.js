@@ -82,7 +82,7 @@ function register() {
         console.error("서버 통신 오류:", error);
         loader.style.display = 'none';
         placeholder.style.display = 'block'; // 다시 안내 문구 표시
-        alert("⚠️ 서버 연결에 실패했습니다.\n1. Replit 서버가 켜져 있는지 확인하세요.\n2. 서버 주소 끝에 /register 가 있는지 확인하세요.\n(개발자 도구 Console 창에서 상세 에러를 볼 수 있습니다.)");
+        alert("⚠️ 서버 연결에 실패했습니다.\n1. Replit 서버가 켜져 있는지 확인하세요.\n2. 서버 주소 끝에 /generate-trip-plan 가 있는지 확인하세요.\n(개발자 도구 Console 창에서 상세 에러를 볼 수 있습니다.)");
     });
 }
 
