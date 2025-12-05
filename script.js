@@ -1,4 +1,4 @@
-const SERVER_URL = 'https://1f4dc10b-3305-4ea9-a554-9ea67d3e654d-00-2foe5e4fdcyj0.pike.replit.dev/register';
+const SERVER_URL = 'https://1f4dc10b-3305-4ea9-a554-9ea67d3e654d-00-2foe5e4fdcyj0.pike.replit.dev/air';
 
 // DOM 요소
 const durationInput = document.getElementById('duration');
@@ -94,7 +94,7 @@ function renderResult(data) {
     let html = `
         <div class="result-header">
             <div class="trip-title">${data.title}</div>
-            <span class="reality-badge ${scoreClass}">현실성 점수: ${data.reality_score} / 5.0</span>
+            <span class="reality-badge ${scoreClass}">현실성 점수: ${data.reality_score} / 5 </span>
             <div class="total-cost">총 예상 비용: ${data.total_estimated_cost}</div>
         </div>
         <div class="planner-comment">
