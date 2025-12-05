@@ -1,4 +1,4 @@
-const SERVER_URL = 'https://1f4dc10b-3305-4ea9-a554-9ea67d3e654d-00-2foe5e4fdcyj0.pike.replit.dev';
+const SERVER_URL = 'https://1f4dc10b-3305-4ea9-a554-9ea67d3e654d-00-2foe5e4fdcyj0.pike.replit.dev/register';
 
 // DOM 요소
 const durationInput = document.getElementById('duration');
