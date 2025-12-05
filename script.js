@@ -72,18 +72,17 @@ function register() {
         return response.json();
     })
     .then(data => {
+        // [성공 시] 실제 AI 데이터 렌더링
         loader.style.display = 'none';
-        resultContent.style.display = 'flex'; // [중요] Flex로 해야 CSS 스크롤 적용됨
+        resultContent.style.display = 'flex';
         renderResult(data);
     })
     .catch(error => {
-        console.warn("Demo Mode:", error);
-        setTimeout(() => {
-            const mockResponse = generateDynamicMockResponse(dest, duration, budget, selectedTransports);
-            loader.style.display = 'none';
-            resultContent.style.display = 'flex'; // [중요] Flex로 해야 CSS 스크롤 적용됨
-            renderResult(mockResponse);
-        }, 1500);
+        // [실패 시] 가짜 데이터 생성 로직 삭제함 -> 명확한 에러 알림
+        console.error("서버 통신 오류:", error);
+        loader.style.display = 'none';
+        placeholder.style.display = 'block'; // 다시 안내 문구 표시
+        alert("⚠️ 서버 연결에 실패했습니다.\n1. Replit 서버가 켜져 있는지 확인하세요.\n2. 서버 주소 끝에 /register 가 있는지 확인하세요.\n(개발자 도구 Console 창에서 상세 에러를 볼 수 있습니다.)");
     });
 }
 
@@ -118,7 +117,7 @@ function renderResult(data) {
                                 <div class="act-name">${act.place}</div>
                                 <div class="act-desc">${act.description}</div>
                             </div>
-                            <div class="act-cost">${act.cost}원</div>
+                            <div class="act-cost">${act.cost}</div>
                         </div>`;
                 });
             }
@@ -127,36 +126,4 @@ function renderResult(data) {
     }
     html += `</div>`;
     resultContent.innerHTML = html;
-}
-
-function generateDynamicMockResponse(destination, duration, budget, transports) {
-    const isLowBudget = budget < 100000;
-    const transportStr = transports.join(', ');
-    const days = parseInt(duration);
-
-    // [중요] 한글 비용 포맷 적용
-    const rawTotalCost = isLowBudget ? (days * budget) + 100000 : (days * budget);
-    const formattedTotalCost = "약 " + formatKoreanMoney(rawTotalCost);
-
-    let dailyPlans = [];
-    for(let i=1; i<=days; i++) {
-        dailyPlans.push({
-            "day": i,
-            "date_theme": `${i}일차 ${destination} 탐방`,
-            "activities": [
-                { time: "오전 10:00", place: `${destination} 명소 ${i}`, description: `${transports[i % transports.length] || '도보'} 이동 및 관람`, icon: "🚩", cost: isLowBudget ? "0" : "15,000" },
-                { time: "오후 2:00", place: `${i}일차 맛집`, description: "현지 음식 식사", icon: "🍜", cost: isLowBudget ? "10,000" : "25,000" },
-                { time: "오후 7:00", place: `${i}일차 야경`, description: "야경 감상", icon: "✨", cost: "5,000" }
-            ]
-        });
-    }
-
-    return {
-        "title": `[A.I.R] ${destination} ${days-1}박 ${days}일 플랜`,
-        "reality_score": isLowBudget ? 2 : 5,
-        "reality_reason": isLowBudget ? "예산 부족" : "예산 적절",
-        "total_estimated_cost": formattedTotalCost, // 한글로 적용됨
-        "planner_comment": `요청하신 ${days}일 동안의 일정을 최적화했습니다.`,
-        "daily_plans": dailyPlans
-    };
 }
