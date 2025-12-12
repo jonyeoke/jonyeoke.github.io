@@ -1,4 +1,4 @@
-const SERVER_URL = 'https://1f4dc10b-3305-4ea9-a554-9ea67d3e654d-00-2foe5e4fdcyj0.pike.replit.dev/generate-trip-plan';
+const SERVER_URL = 'https://4c9d543c-2335-4d98-b6bb-0aef12eac8ae-00-1sufidal5m9s0.sisko.replit.dev/generate-trip-plan';
 
 // DOM 요소
 const durationInput = document.getElementById('duration');
